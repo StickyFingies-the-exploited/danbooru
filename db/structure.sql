@@ -132,7 +132,8 @@ SET default_table_access_method = heap;
 CREATE TABLE public.ai_tags (
     media_asset_id integer NOT NULL,
     tag_id integer NOT NULL,
-    score smallint NOT NULL
+    score smallint NOT NULL,
+    refused boolean NOT NULL DEFAULT false
 );
 
 

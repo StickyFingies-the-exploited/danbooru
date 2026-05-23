@@ -1,7 +1,7 @@
 <%= render "tags/secondary_links" %>
 
 <div id="c-ai-tags">
-  <div id="a-index">
+  <div id="a-index" x-data="{ hideAdded: false }">
     <h1>AI Tags</h1>
 
     <%= search_form_for(ai_tags_path) do |f| %>
@@ -19,6 +19,16 @@
         <%= link_to "Unposted", current_page_path(search: search_params.merge(is_posted: false)), class: [(search_params[:is_posted].to_s.falsy? ? "tab active-tab" : "tab")] %>
 
         <span class="flex-grow-1"></span>
+
+        <% if @mode != "table" %>
+          <button type="button" class="tab" :class="{ 'active-tab': hideAdded }" x-on:click="hideAdded = !hideAdded" title="Hide suggestions that are already added to the post">
+            Hide Added
+          </button>
+          <%= link_to (search_params[:show_refused].to_s.truthy? ? "Hide Refused" : "Show Refused"),
+                current_page_path(search: search_params.merge(show_refused: !search_params[:show_refused].to_s.truthy?)),
+                class: ["tab", (search_params[:show_refused].to_s.truthy? ? "active-tab" : nil)],
+                title: (search_params[:show_refused].to_s.truthy? ? "Hide refused suggestions" : "Show refused suggestions") %>
+        <% end %>
 
         <%= render PreviewSizeMenuComponent.new(current_size: @preview_size) %>
 

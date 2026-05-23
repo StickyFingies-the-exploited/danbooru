@@ -15,6 +15,17 @@ class AITagsController < ApplicationController
     respond_with(@ai_tags)
   end
 
+  # Mark or unmark the AI tag suggestion as refused.
+  def refuse
+    @ai_tag = authorize AITag.find_by!(media_asset_id: params[:media_asset_id], tag_id: params[:tag_id])
+    @post = @ai_tag.post
+    @ai_tag.update!(refused: !@ai_tag.refused?)
+
+    notice = @ai_tag.refused? ? "Suggestion refused." : "Refusal undone."
+    @preview_size = params[:size].presence || cookies[:post_preview_size].presence || MediaAssetGalleryComponent::DEFAULT_SIZE
+    respond_with(@ai_tag, notice: notice)
+  end
+
   # Add the tag to the post, or remove the tag from the post.
   def tag
     @ai_tag = authorize AITag.find_by!(media_asset_id: params[:media_asset_id], tag_id: params[:tag_id])

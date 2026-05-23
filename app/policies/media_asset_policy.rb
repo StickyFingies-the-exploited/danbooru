@@ -9,6 +9,10 @@ class MediaAssetPolicy < ApplicationPolicy
     user.is_admin?
   end
 
+  def autotag?
+    unbanned?
+  end
+
   def image?
     can_see_image?
   end

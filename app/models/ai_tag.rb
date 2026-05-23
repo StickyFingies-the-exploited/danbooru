@@ -14,6 +14,8 @@ class AITag < ApplicationRecord
   scope :undeprecated, -> { where(tag: Tag.undeprecated) }
   scope :empty, -> { where(tag: Tag.empty) }
   scope :nonempty, -> { where(tag: Tag.nonempty) }
+  scope :refused, -> { where(refused: true) }
+  scope :not_refused, -> { where(refused: false) }
 
   delegate :name, :pretty_name, :post_count, :category, :category_name, :to_aliased_tag, :is_deprecated?, :empty?, :is_aliased?, :metatag?, to: :tag
 
@@ -33,6 +35,12 @@ class AITag < ApplicationRecord
       q = q.where.associated(:post)
     elsif params[:is_posted].to_s.falsy?
       q = q.where.missing(:post)
+    end
+
+    if params[:show_refused].to_s.truthy?
+      # include all, including refused
+    else
+      q = q.not_refused
     end
 
     case params[:order]

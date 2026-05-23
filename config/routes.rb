@@ -140,6 +140,7 @@ Rails.application.routes.draw do
   end
   resources :media_assets, only: [:index, :show, :destroy] do
     get "/:variant", to: "media_assets#image", as: :image
+    post :autotag, on: :member
   end
   resources :media_metadata, only: [:index]
 
@@ -150,6 +151,7 @@ Rails.application.routes.draw do
 
   resources :ai_tags, only: [:index]
   put "/ai_tags/:media_asset_id/:tag_id/tag", to: "ai_tags#tag", as: "tag_ai_tag"
+  put "/ai_tags/:media_asset_id/:tag_id/refuse", to: "ai_tags#refuse", as: "refuse_ai_tag"
 
   resources :mod_actions
   get "/moderator/dashboard" => "moderator_dashboard#show"

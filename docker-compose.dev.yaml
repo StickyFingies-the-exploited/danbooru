@@ -63,7 +63,7 @@ x-base-env: &base-env
 
   # To enable the autotagger service, uncomment this line AND the autotagger service further below.
   # It is disabled by default because it significantly slows down the creation of codespaces.
-  # DANBOORU_AUTOTAGGER_URL: http://autotagger:5000
+  DANBOORU_AUTOTAGGER_URL: http://autotagger:5000
 
 x-base-template: &base-template
   # Use the latest development image from master, instead of the production image. The development
@@ -194,9 +194,8 @@ services:
     volumes:
       - "danbooru-images:/images"
 
-  # autotagger:
-  #   image: ghcr.io/danbooru/autotagger:latest
-  # This services requires the DANBOORU_AUTOTAGGER_URL env var to be uncommented further above.
+  autotagger:
+    image: ghcr.io/danbooru/autotagger:latest
 
   webpack:
     <<: *base-template

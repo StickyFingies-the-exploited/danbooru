@@ -1,0 +1,33 @@
+<%# media_asset %>
+<div class="autotagger-widget mb-3"
+     x-data="{ confidence: 50, loading: false, message: null }"
+     data-media-asset-id="<%= media_asset.id %>">
+  <div class="flex flex-wrap items-center gap-3">
+    <button type="button"
+            class="button-outline button-sm"
+            x-bind:disabled="loading"
+            x-on:click="
+              loading = true;
+              message = null;
+              Danbooru.Autotagger.autotag($el.closest('[data-media-asset-id]').dataset.mediaAssetId, confidence)
+                .then(result => { message = result.added + ' tag(s) added'; })
+                .catch(e => { message = e.message; })
+                .finally(() => { loading = false; })
+            ">
+      <template x-if="!loading">
+        <span>Autotag</span>
+      </template>
+      <template x-if="loading">
+        <span x-cloak>Autotagging…</span>
+      </template>
+    </button>
+
+    <label class="flex items-center gap-2 text-sm select-none">
+      <span class="text-muted">Confidence:</span>
+      <input type="range" min="0" max="100" step="1" x-model="confidence" class="w-24 align-middle">
+      <span class="w-8 text-right" x-text="confidence + '%'"></span>
+    </label>
+
+    <span x-show="message !== null" x-cloak x-text="message" class="text-sm text-muted"></span>
+  </div>
+</div>

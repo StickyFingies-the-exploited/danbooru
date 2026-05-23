@@ -43,6 +43,20 @@ class MediaAssetsController < ApplicationController
     respond_with(@media_asset, notice: "File deleted")
   end
 
+  def autotag
+    @media_asset = authorize MediaAsset.find(params[:id])
+    confidence = params.fetch(:confidence, 50).to_i.clamp(0, 100)
+
+    @media_asset.regenerate_ai_tags!
+
+    tags = @media_asset.ai_tags.not_refused.includes(:tag).where("score >= ?", confidence)
+    tag_names = tags.map { |ai_tag| ai_tag.to_aliased_tag.name }.uniq
+
+    render json: { tags: tag_names }
+  rescue AutotaggerClient::Error => e
+    render json: { message: e.message }, status: :service_unavailable
+  end
+
   def image
     media_asset = authorize MediaAsset.find(params[:media_asset_id])
     variant = media_asset.variant(params[:variant])
